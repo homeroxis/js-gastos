@@ -22,7 +22,13 @@ class Sueldo {
 
   nuevoEgreso(gasto) {
     this.gastos = [...this.gastos, gasto];
-    console.log('hubo un egreso', this.gastos);
+    this.calcSaldo();
+  }
+  calcSaldo() {
+    const gastado = this.gastos.reduce((total, gasto ) => {
+      total + gasto.cantidad, 0
+    } )
+    console.log(gastado)
   }
 }
 
@@ -59,10 +65,22 @@ class UI {
       const li = document.createElement('li');
       li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center')
       li.textContent = nombre;
+      // span cantidad
+      const cant = document.createElement('span');
+      cant.className = 'badge rounded-pill text-bg-danger';
+      cant.textContent = cantidad;
+      li.appendChild(cant);
+      
+      // Btn borrar
       const deleteBtn = document.createElement('button');
       deleteBtn.classList.add('btn', 'btn-danger');
       deleteBtn.textContent = 'x'
       li.appendChild(deleteBtn);
+
+      // función borrar
+      deleteBtn.click(() => {
+        // deleteSpent(id)
+      });
 
       spent.appendChild(li);
     })
@@ -94,7 +112,7 @@ function setEstimation(e) {
 }
 
 function clearHtml(div) {
-  if (div.firstChild) {
+  while(div.firstChild) {
     div.removeChild(div.firstChild);
   }
 }
