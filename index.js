@@ -53,10 +53,17 @@ class UI {
     }, 3000);
   }
   addSpentList(gastos) {
+    clearHtml(spent);
     gastos.forEach( gasto => {
+      const { nombre, cantidad, id } = gasto
       const li = document.createElement('li');
-      li.classList.add('list-group-item')
-      li.textContent = gasto.nombre;
+      li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center')
+      li.textContent = nombre;
+      const deleteBtn = document.createElement('button');
+      deleteBtn.classList.add('btn', 'btn-danger');
+      deleteBtn.textContent = 'x'
+      li.appendChild(deleteBtn);
+
       spent.appendChild(li);
     })
   }
