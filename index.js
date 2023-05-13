@@ -43,6 +43,9 @@ class UI {
     const { presupuesto, restante } = cantidad;
     document.querySelector('#total span').textContent = presupuesto;
     document.querySelector('#restante span').textContent = restante;
+    setTimeout(() => {
+      document.querySelector('#gasto').focus();
+    }, 100);
   }
   showMessage(msg, tipo) {
     const message = document.querySelector('#message');
@@ -112,8 +115,14 @@ class UI {
       divRestante.classList.add('alert-warning');
     }
     if (restante <= 0) {
-      btnSubmit = document.querySelector('#btnSubmit').disabled = true;
+      document.querySelector('#btnSubmit').disabled = true;
+      document.querySelector('#gasto').disabled = true;
+      document.querySelector('#cantidad').disabled = true;
       ui.showMessage('Te has pasado del presupuesto', 'error');
+    } else {
+      document.querySelector('#btnSubmit').disabled = false;
+      document.querySelector('#gasto').disabled = false;
+      document.querySelector('#cantidad').disabled = false;
     }
   }
 }
@@ -183,6 +192,7 @@ function onSubmit(e) {
 
   // resetear fomulario
   form.reset();
+  document.querySelector('#gasto').focus();
 }
 
 function deleteSpent(id) {
