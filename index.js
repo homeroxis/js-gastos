@@ -13,7 +13,7 @@ function eventListener() {
 }
 
 // CLASS
-class Sueldo {
+class Presupuesto {
   constructor(presupuesto) {
     this.presupuesto = Number(presupuesto);
     this.restante = Number(presupuesto);
@@ -22,11 +22,19 @@ class Sueldo {
 
   nuevoEgreso(gasto) {
     this.gastos = [...this.gastos, gasto];
-    this.calcSaldo();
+    this.calcularRestante();
   }
-  calcSaldo() {
-    const gastado = this.gastos.reduce((total, gasto ) => total + gasto.cantidad, 0 )
+  calcularRestante() {
+    const gastado = this.gastos.reduce(
+      (total, gasto) => total + gasto.cantidad,
+      0
+    );
     this.restante = this.presupuesto - gastado;
+  }
+
+  eliminaGasto(id) {
+    this.gastos = this.gastos.filter((gasto) => gasto.id != id);
+    this.calcularRestante();
   }
 }
 
@@ -56,47 +64,54 @@ class UI {
       clearHtml(message);
     }, 3000);
   }
-  addSpentList(gastos) {
+  mostrarGatos(gastos) {
     clearHtml(spent);
-    gastos.forEach( gasto => {
-      const { nombre, cantidad, id } = gasto
+    gastos.forEach((gasto) => {
+      const { nombre, cantidad, id } = gasto;
+
       const li = document.createElement('li');
-      li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center')
+      li.classList.add(
+        'list-group-item',
+        'd-flex',
+        'justify-content-between',
+        'align-items-center'
+      );
       li.textContent = nombre;
       // span cantidad
       const cant = document.createElement('span');
       cant.className = 'badge rounded-pill text-bg-danger';
       cant.textContent = cantidad;
       li.appendChild(cant);
-      
+
       // Btn borrar
       const deleteBtn = document.createElement('button');
       deleteBtn.classList.add('btn', 'btn-danger');
-      deleteBtn.textContent = 'x'
+      deleteBtn.textContent = 'x';
       li.appendChild(deleteBtn);
 
       // función borrar
-      deleteBtn.click(() => {
-        // deleteSpent(id)
-      });
+      deleteBtn.onclick = () => {
+        deleteSpent(id);
+      };
 
       spent.appendChild(li);
-    })
+    });
   }
-  actualizarRestante(nuevoRestante){
+
+  actualizarRestante(nuevoRestante) {
     document.querySelector('#restante span').textContent = nuevoRestante;
   }
-  statusRestante(sueldo){
+  comprobarPrsupuesto(sueldo) {
     const { presupuesto, restante } = sueldo;
     const divRestante = document.querySelector('#restante');
-    if((presupuesto / 4) > restante  ){
+    if (presupuesto / 4 > restante) {
       divRestante.classList.remove('alert-success', 'alert-warning');
       divRestante.classList.add('alert-danger');
-    } else if((presupuesto / 2) > restante) {
+    } else if (presupuesto / 2 > restante) {
       divRestante.classList.remove('alert-success');
       divRestante.classList.add('alert-warning');
-    } 
-    if( restante <= 0 ){
+    }
+    if (restante <= 0) {
       btnSubmit = document.querySelector('#btnSubmit').disabled = true;
       ui.showMessage('Te has pasado del presupuesto', 'error');
     }
@@ -110,15 +125,17 @@ function setEstimation(e) {
   if (e.keyCode === 13) {
     presupuestoUsuaro = estimation.value;
     if (
-      presupuestoUsuaro === '' || presupuestoUsuaro === null ||
-      isNaN(presupuestoUsuaro) || presupuestoUsuaro <= 0
+      presupuestoUsuaro === '' ||
+      presupuestoUsuaro === null ||
+      isNaN(presupuestoUsuaro) ||
+      presupuestoUsuaro <= 0
     ) {
       estimation.value = '';
       presupuestoUsuaro = null;
       ui.showMessage('debe de ingresar un valor numérico', 'error');
       return;
     }
-    sueldo = new Sueldo(presupuestoUsuaro);
+    sueldo = new Presupuesto(presupuestoUsuaro);
     ui.insertarPresupuesto(sueldo);
 
     interfaz.style.display = 'flex';
@@ -128,7 +145,7 @@ function setEstimation(e) {
 }
 
 function clearHtml(div) {
-  while(div.firstChild) {
+  while (div.firstChild) {
     div.removeChild(div.firstChild);
   }
 }
@@ -160,10 +177,18 @@ function onSubmit(e) {
 
   // mandar gastos para imprimirlos en el html
   const { gastos, restante } = sueldo;
-  ui.addSpentList(gastos);
+  ui.mostrarGatos(gastos);
   ui.actualizarRestante(restante);
-  ui.statusRestante(sueldo);
-  
+  ui.comprobarPrsupuesto(sueldo);
+
   // resetear fomulario
   form.reset();
+}
+
+function deleteSpent(id) {
+  sueldo.eliminaGasto(id);
+  const { gastos, restante } = sueldo;
+  ui.mostrarGatos(gastos);
+  ui.actualizarRestante(restante);
+  ui.comprobarPrsupuesto(sueldo);
 }
