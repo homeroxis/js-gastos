@@ -95,6 +95,10 @@ class UI {
     } else if((presupuesto / 2) > restante) {
       divRestante.classList.remove('alert-success');
       divRestante.classList.add('alert-warning');
+    } 
+    if( restante <= 0 ){
+      btnSubmit = document.querySelector('#btnSubmit').disabled = true;
+      ui.showMessage('Te has pasado del presupuesto', 'error');
     }
   }
 }
