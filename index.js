@@ -1,6 +1,8 @@
 // VAR
 const estimation = document.querySelector('#presupuesto');
 const form = document.querySelector('form');
+const interfaz = document.querySelector('#interfaz');
+const ingreso = document.querySelector('#ingreso');
 
 // EVENTS
 eventListener();
@@ -17,14 +19,10 @@ class Sueldo {
     this.gastos = [];
   }
 
-  nuevoEgreso(gasto){
-    this.gastos = [
-      ...this.gastos,
-      gasto
-    ];
+  nuevoEgreso(gasto) {
+    this.gastos = [...this.gastos, gasto];
     console.log('hubo un egreso', this.gastos);
   }
- 
 }
 
 class UI {
@@ -34,11 +32,11 @@ class UI {
     document.querySelector('#restante span').textContent = restante;
   }
   showMessage(msg, tipo) {
-    const alertBox = document.querySelector('#alert-box');
+    const message = document.querySelector('#message');
     const alertDiv = document.createElement('div');
     alertDiv.className = 'alert mt-3 text-center';
     alertDiv.textContent = msg;
-    alertBox.appendChild(alertDiv);
+    message.appendChild(alertDiv);
 
     switch (tipo) {
       case 'error':
@@ -50,8 +48,11 @@ class UI {
         break;
     }
     setTimeout(() => {
-      clearHtml(alertBox);
+      clearHtml(message);
     }, 3000);
+  }
+  addSpentList(gasto){
+    console.log(gasto);
   }
 }
 
@@ -74,17 +75,15 @@ function setEstimation(e) {
     }
     sueldo = new Sueldo(presupuestoUsuaro);
     ui.insertarPresupuesto(sueldo);
-    const interfaz = document.querySelector('#interfaz');
+
     interfaz.style.display = 'flex';
-    const ingreso = document.querySelector('#ingreso');
+
     ingreso.style.display = 'none';
   }
 }
 
-
 function clearHtml(div) {
   if (div.firstChild) {
-    console.log(div);
     div.removeChild(div.firstChild);
   }
 }
@@ -110,6 +109,8 @@ function onSubmit(e) {
     id: Date.now(),
   };
 
-  sueldo.nuevoEgreso(gasto)
+  sueldo.nuevoEgreso(gasto);
+  ui.showMessage('Gasto ingresado correctamente');
+  ui.addSpentList(gasto);
   form.reset();
 }
