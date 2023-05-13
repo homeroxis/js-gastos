@@ -27,6 +27,7 @@ class Sueldo {
   calcSaldo() {
     const gastado = this.gastos.reduce((total, gasto ) => total + gasto.cantidad, 0 )
     this.restante - this.presupuesto - gastado;
+    console.log(this.restante);
   }
 }
 
@@ -83,8 +84,9 @@ class UI {
       spent.appendChild(li);
     })
   }
-  actualizarRestante(restante){
-    document.querySelector('#restante span').textContent = restante;
+  actualizarRestante(nuevoRestante){
+    console.log('pase por el restante', nuevoRestante);
+    document.querySelector('#restante span').textContent = nuevoRestante;
   }
 }
 
