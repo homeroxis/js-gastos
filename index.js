@@ -3,6 +3,7 @@ const estimation = document.querySelector('#presupuesto');
 const form = document.querySelector('form');
 const interfaz = document.querySelector('#interfaz');
 const ingreso = document.querySelector('#ingreso');
+const spent = document.querySelector('#spent');
 
 // EVENTS
 eventListener();
@@ -51,8 +52,13 @@ class UI {
       clearHtml(message);
     }, 3000);
   }
-  addSpentList(gasto){
-    console.log(gasto);
+  addSpentList(gastos) {
+    gastos.forEach( gasto => {
+      const li = document.createElement('li');
+      li.classList.add('list-group-item')
+      li.textContent = gasto.nombre;
+      spent.appendChild(li);
+    })
   }
 }
 
@@ -63,10 +69,8 @@ function setEstimation(e) {
   if (e.keyCode === 13) {
     presupuestoUsuaro = estimation.value;
     if (
-      presupuestoUsuaro === '' ||
-      presupuestoUsuaro === null ||
-      isNaN(presupuestoUsuaro) ||
-      presupuestoUsuaro <= 0
+      presupuestoUsuaro === '' || presupuestoUsuaro === null ||
+      isNaN(presupuestoUsuaro) || presupuestoUsuaro <= 0
     ) {
       estimation.value = '';
       presupuestoUsuaro = null;
@@ -96,7 +100,7 @@ function onSubmit(e) {
   if (nombre === '' || cantidad === '') {
     ui.showMessage('Los campos no deben de ir vacíos', 'error');
     return;
-  } else if (nombre.length <= 3) {
+  } else if (nombre.length < 3) {
     ui.showMessage('El campo Gasto debe tener al menos 3 caracteres', 'error');
     return;
   } else if (cantidad <= 0 || isNaN(cantidad)) {
@@ -109,8 +113,14 @@ function onSubmit(e) {
     id: Date.now(),
   };
 
+  // registrar gasto para llenar el objeto
   sueldo.nuevoEgreso(gasto);
   ui.showMessage('Gasto ingresado correctamente');
-  ui.addSpentList(gasto);
+
+  // mandar gastos para imprimirlos en el html
+  const { gastos } = sueldo;
+  ui.addSpentList(gastos);
+  
+  // resetear fomulario
   form.reset();
 }
