@@ -26,8 +26,7 @@ class Sueldo {
   }
   calcSaldo() {
     const gastado = this.gastos.reduce((total, gasto ) => total + gasto.cantidad, 0 )
-    this.restante - this.presupuesto - gastado;
-    console.log(this.restante);
+    this.restante = this.presupuesto - gastado;
   }
 }
 
@@ -85,8 +84,18 @@ class UI {
     })
   }
   actualizarRestante(nuevoRestante){
-    console.log('pase por el restante', nuevoRestante);
     document.querySelector('#restante span').textContent = nuevoRestante;
+  }
+  statusRestante(sueldo){
+    const { presupuesto, restante } = sueldo;
+    const divRestante = document.querySelector('#restante');
+    if((presupuesto / 4) > restante  ){
+      divRestante.classList.remove('alert-success', 'alert-warning');
+      divRestante.classList.add('alert-danger');
+    } else if((presupuesto / 2) > restante) {
+      divRestante.classList.remove('alert-success');
+      divRestante.classList.add('alert-warning');
+    }
   }
 }
 
@@ -149,6 +158,7 @@ function onSubmit(e) {
   const { gastos, restante } = sueldo;
   ui.addSpentList(gastos);
   ui.actualizarRestante(restante);
+  ui.statusRestante(sueldo);
   
   // resetear fomulario
   form.reset();
