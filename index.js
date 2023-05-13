@@ -25,10 +25,8 @@ class Sueldo {
     this.calcSaldo();
   }
   calcSaldo() {
-    const gastado = this.gastos.reduce((total, gasto ) => {
-      total + gasto.cantidad, 0
-    } )
-    console.log(gastado)
+    const gastado = this.gastos.reduce((total, gasto ) => total + gasto.cantidad, 0 )
+    this.restante - this.presupuesto - gastado;
   }
 }
 
@@ -84,6 +82,9 @@ class UI {
 
       spent.appendChild(li);
     })
+  }
+  actualizarRestante(restante){
+    document.querySelector('#restante span').textContent = restante;
   }
 }
 
@@ -143,8 +144,9 @@ function onSubmit(e) {
   ui.showMessage('Gasto ingresado correctamente');
 
   // mandar gastos para imprimirlos en el html
-  const { gastos } = sueldo;
+  const { gastos, restante } = sueldo;
   ui.addSpentList(gastos);
+  ui.actualizarRestante(restante);
   
   // resetear fomulario
   form.reset();
